@@ -2,16 +2,18 @@ from flask import Flask, render_template, request, redirect, session, url_for
 import requests
 import mysql.connector
 from werkzeug.security import check_password_hash, generate_password_hash
+import os   # ✅ added (required)
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey123"
 
+# ✅ ONLY THIS PART CHANGED (Railway MySQL)
 db_config = {
-    "host": "localhost",
-    "user": "root",
-    "password": "root123",
-    "database": "recipe_app",
-    "port": 3307
+    "host": os.getenv("MYSQLHOST"),
+    "user": os.getenv("MYSQLUSER"),
+    "password": os.getenv("MYSQLPASSWORD"),
+    "database": os.getenv("MYSQLDATABASE"),
+    "port": int(os.getenv("MYSQLPORT", 3306))
 }
 
 # ---------- LOGIN ----------
@@ -263,5 +265,6 @@ def logout():
     return redirect("/login")
 
 
+# ✅ ONLY THIS PART CHANGED (Railway compatible)
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
