@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Saved Recipes</title>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 1200px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .recipe-card {
+      display: inline-block;
+      width: 200px;
+      margin: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: #fff;
+      text-align: center;
+    }
+
+    .recipe-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .recipe-card h4 {
+      margin-top: 10px;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      color: #5e1806;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  .back-dashboard {
+    display: inline-block;
+    margin: 15px;
+    padding: 10px 16px;
+    background: #5e1806;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .back-dashboard:hover {
+    background: #7a2b15;
+    transform: translateX(-3px);
+  }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>My Saved Recipes</h2>
+
+    {% if recipes %}
+      <div class="recipes">
+        {% for recipes in recipes %}
+          <div class="recipe-card">
+            <img src="{{ recipes[1] }}" alt="{{ recipes[0] }}">
+            <h4>{{ recipes[0] }}</h4>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>No saved recipes yet!</p>
+    {% endif %}
+
+    <a href="{{ url_for('home') }}" class="back-link">Back to Home</a>
+  </div>
+  <a href="/dashboard" class="back-dashboard">
+  ⬅️ Back to Dashboard
+</a>
+</body>
+</html>

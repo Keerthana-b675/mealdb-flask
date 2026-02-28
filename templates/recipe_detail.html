@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Recipe Details</title>
+
+  <style>
+    body {
+      font-family: Segoe UI;
+      padding: 30px;
+      background: #f4f4f9;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+    .image-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .image-box img {
+      width: 420px;
+      border-radius: 12px;
+    }
+    .actions {
+      text-align: center;
+      margin: 15px 0;
+    }
+    .btn {
+      padding: 10px 18px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .save-btn {
+      background: #e60039;
+      color: white;
+    }
+    .back-btn {
+      background: #5e1806;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="image-box">
+    <img src="{{ meal.strMealThumb }}">
+  </div>
+
+  <div class="actions">
+    <!-- ✅ FIXED -->
+    <form method="POST" action="/save_recipe" style="display:inline;">
+      <input type="hidden" name="recipe_id" value="{{ meal.idMeal }}">
+      <input type="hidden" name="recipe_name" value="{{ meal.strMeal }}">
+      <input type="hidden" name="recipe_thumb" value="{{ meal.strMealThumb }}">
+      <input type="hidden" name="recipe_url" value="{{ meal.strSource or meal.strYoutube }}">
+      <button class="btn save-btn">❤️ Save to Saved Recipes</button>
+    </form>
+
+    <!-- ✅ FIXED -->
+    <button onclick="history.back()" class="back-btn">⬅ Back</button>
+  </div>
+
+  <h2>{{ meal.strMeal }}</h2>
+
+  <h3>🧾 Ingredients</h3>
+  <ul>
+    {% for i in ingredients %}
+      <li>{{ i }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>👩‍🍳 Instructions</h3>
+  <p>{{ meal.strInstructions }}</p>
+
+</div>
+</body>
+</html>

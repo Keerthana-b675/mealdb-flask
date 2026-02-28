@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home - AI Recipe App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('/static/bg2.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      background-color: #fff7fc;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1, h2 {
+      color: #42023ff4;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 250px;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #42023ff4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    .meal-card {
+      background: #f7eaf8;
+      padding: 15px;
+      margin: 20px auto;
+      max-width: 500px;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .logout {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      max-width: 600px;
+      margin: 80px auto;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="logout">
+  <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+<form action="{{ url_for('saved_recipes') }}" method="GET">
+  <button type="submit">View Saved Recipes</button>
+</form>
+
+<marquee><h1>Welcome, {{ session['user'] }}!</h1></marquee>
+
+<h2>Search for a meal</h2>
+
+<form method="POST">
+  <input type="text" name="query" placeholder="Enter meal name" required>
+  <button type="submit">Search</button>
+</form>
+
+{% if meals %}
+  {% for meal in meals %}
+    <div class="meal-card">
+      <h2>{{ meal.strMeal }}</h2>
+      <img src="{{ meal.strMealThumb }}">
+
+      <button onclick="showRecipe('{{ meal.strMeal }}')">View Recipe Summary</button>
+
+      <a href="{{ meal.strSource or meal.strYoutube }}" target="_blank">
+        <button type="button">Full Recipe</button>
+      </a>
+
+      <form method="POST" action="/save_recipe">
+        <input type="hidden" name="recipe_id" value="{{ meal.idMeal }}">
+        <input type="hidden" name="recipe_name" value="{{ meal.strMeal }}">
+        <input type="hidden" name="recipe_url" value="{{ meal.strSource or meal.strYoutube }}">
+        <input type="hidden" name="recipe_thumb" value="{{ meal.strMealThumb }}">
+        <button type="submit">Save Recipe</button>
+      </form>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<!-- MODAL -->
+<div id="recipeModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">×</span>
+    <h2 id="recipeTitle"></h2>
+    <h3>Ingredients</h3>
+    <ul id="ingredients"></ul>
+    <h3>Instructions</h3>
+    <p id="instructions"></p>
+  </div>
+</div>
+
+<script>
+function showRecipe(name) {
+  fetch(`/get_recipe_summary/${name}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('recipeTitle').innerText = data.name;
+        document.getElementById('ingredients').innerHTML =
+          data.ingredients.map(i => `<li>${i}</li>`).join('');
+        document.getElementById('instructions').innerText = data.instructions;
+        document.getElementById('recipeModal').style.display = 'block';
+      } else {
+        alert("Recipe not available");
+      }
+    });
+}
+
+function closeModal() {
+  document.getElementById('recipeModal').style.display = 'none';
+}
+</script>
+
+{% if login_success %}
+<script>alert("Login successful!");</script>
+{% endif %}
+
+{% if signup_success %}
+<script>alert("Account created successfully!");</script>
+{% endif %}
+
+</body>
+</html>
